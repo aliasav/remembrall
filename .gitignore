@@ -1,0 +1,6 @@
+Remembrall.egg-info/
+Remembrall.egg-info/*
+*DS_Store*
+*.pyc
+virtualenv
+virtualenv/*

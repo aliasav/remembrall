@@ -1,0 +1,14 @@
+Remembrall is an application that allows users to:
+1. Maintain day-to-day TO-DO-LIST
+2. Sends notifications about the items in the TO-DO list
+
+Notifications may be terminal notifications or desktop notifications.
+
+A daemon process, that checks for items available in the TO-DO list,
+shall run every n hours to display them.
+
+Prototype architecture:
+- Product must be pip installable module
+- Python script that allows CRUD of items of TO-DO list
+- TO-DO list to be saved in user's home folder
+- Daemon process that shall run ever n hours to display items
