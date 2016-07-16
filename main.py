@@ -16,26 +16,35 @@ Options:
     -h, --help
 
 """
-from docopt import docopt, DocoptExit
-from initializer import entry
+from docopt import docopt, DocoptExit, Dict
+from initializer import entry, Remembrall
 
 def get_args():
     try:
         arguments = docopt(__doc__)
     except DocoptExit as e:
         print("Invalid Command, refer to the manual!")
-        print(e)    
+        print(e)  
+        return None  
     except Exception as e:        
         print("Invalid Command, refer to the manual!")
-        print(e)    
+        print(e)
+        return None 
     else:        
         #print(arguments)
         return arguments
 
+def args_remembrall_mapper(args):
+    """ maps arguments to Remembrall's functions """
+    if args and (type(args) == Dict):
+        if args.get("init", None) == True:
+            print("Initialising Remembrall in your system!")
+            remembrall = Remembrall()
+            remembrall.init_remembrall()
+
 def console_entry():
-    """Entry point for console scripts"""
-    args = get_args()
-    entry()
+    """ Entry point for console scripts """
+    args_remembrall_mapper(get_args())
 
 if __name__ == '__main__':
-    args = get_args()
+    args_remembrall_mapper(get_args())

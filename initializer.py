@@ -18,8 +18,8 @@ class Remembrall():
 		self.home_dir = None
 		self.tty = None
 
-	def init_remembrall():
-		self.init_vars()
+	def init_remembrall(self):
+		self.init_vars()		
 
 	def init_vars(self):
 		self.home_dir = self.get_home_dir()
@@ -77,7 +77,7 @@ def test_main():
 # entry point for console scripts
 def entry():
 	remembrall = Remembrall()	
-	print("Sweeping To-Do list!")	
+	print("Sweeping To-Do list! \n\n")	
 
 if __name__ == "__main__":
 	test_main()	
