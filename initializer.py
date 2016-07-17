@@ -15,6 +15,7 @@ class Remembrall():
 	def __init__(self):
 		self.home_dir = None
 		self.tty = None
+		self.user_config = None
 
 	def init_remembrall(self):
 		""" 
@@ -74,11 +75,23 @@ class Remembrall():
 			print("Remembrall already exists!")
 
 	def create_config(self):
-		""" creates config JSON file """
+		""" creates config JSON file """		
 		home = self.get_remembrall_home()
-		with open(home+"/config.json", "w") as config_file:
-			data = {}
-			json.dump(data, config_file)
+		self.user_config = self.get_user_config()
+		# create config file
+		with open(home+"/config.json", "w") as config_file:			
+			json.dump(self.user_config, config_file)
+
+	def get_user_config(self):
+		name = str(raw_input("Please enter your name: "))
+		reminder_interval = int(raw_input(\
+			"Please enter reminder interval (in minutes): "))
+		data = {
+			"name": name,
+			"reminder_interval": reminder_interval,
+		}		
+		return data
+
 
 class CronJob():
 	""" 
