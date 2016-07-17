@@ -12,20 +12,31 @@ class Remembrall():
 		Creates a hidden remembrall folder in User's home folder.
 		Config JSON file created with user's information 
 	"""
-
 	def __init__(self):
-
 		self.home_dir = None
 		self.tty = None
 
 	def init_remembrall(self):
-		self.init_vars()		
+		""" 
+		initializes remembrall system:
+			sets-up remmebrall folder and config file
+			sets-up crontab
+		"""
+		self.init_vars()
+		self.create_remembrall_folder()
+		self.create_config()
 
 	def init_vars(self):
 		self.home_dir = self.get_home_dir()
 		self.tty = self.get_tty()
-		self.remembrall_home = self.get_remembrall_home()
-		self.create_remembrall_folder()
+		self.remembrall_home = self.get_remembrall_home()		
+
+	def get_vars(self):
+		d = {
+			"home_dir": self.home_dir,
+			"tty": self.tty,
+			"remembrall_home": self.remembrall_home,
+		}
 
 	def get_home_dir(self):
 		""" returns user's home directory path """
@@ -69,14 +80,27 @@ class Remembrall():
 			data = {}
 			json.dump(data, config_file)
 
+class CronJob():
+	""" 
+		Cron job initializer.
+	"""
+	def __init__(self, remembrall):
+		if remembrall and isinstance(remembrall, Remembrall):
+			self.remembrall = remembrall
+			print("Initialized cron-job object")
+		else:
+			print("Error in initializing cron-job, no remembrall object found!")
+			sys.exit(1)
+
+
 # test function
 def test_main():	
 	remembrall = Remembrall()
-	remembrall.init_remembrall()
+	remembrall.init_remembrall()	
 
 # entry point for console scripts
 def entry():
-	remembrall = Remembrall()	
+	remembrall = Remembrall()
 	print("Sweeping To-Do list! \n\n")	
 
 if __name__ == "__main__":

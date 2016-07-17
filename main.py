@@ -17,7 +17,7 @@ Options:
 
 """
 from docopt import docopt, DocoptExit, Dict
-from initializer import entry, Remembrall
+from initializer import entry, Remembrall, CronJob
 
 def get_args():
     try:
@@ -41,6 +41,7 @@ def args_remembrall_mapper(args):
             print("Initialising Remembrall in your system!")
             remembrall = Remembrall()
             remembrall.init_remembrall()
+            cron = CronJob(remembrall)
 
 def console_entry():
     """ Entry point for console scripts """
