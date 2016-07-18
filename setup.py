@@ -14,7 +14,8 @@ setup(
     keywords = "remembrall to-do list",    
     packages=find_packages(),
     install_requires= [
-        "docopt"
+        "docopt",
+	"python-crontab",
     ],
     long_description=read('README'),    
     entry_points={

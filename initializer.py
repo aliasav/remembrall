@@ -5,6 +5,7 @@ import sys
 import os
 import json
 import subprocess
+from constants import *
 
 class Remembrall():
 	"""
@@ -15,7 +16,8 @@ class Remembrall():
 	def __init__(self):
 		self.home_dir = None
 		self.tty = None
-		self.user_config = None
+		self.remembrall_config = None
+		self.todo_file = None
 
 	def init_remembrall(self):
 		""" 
@@ -30,14 +32,8 @@ class Remembrall():
 	def init_vars(self):
 		self.home_dir = self.get_home_dir()
 		self.tty = self.get_tty()
-		self.remembrall_home = self.get_remembrall_home()		
+		self.remembrall_home = self.get_remembrall_home()
 
-	def get_vars(self):
-		d = {
-			"home_dir": self.home_dir,
-			"tty": self.tty,
-			"remembrall_home": self.remembrall_home,
-		}
 
 	def get_home_dir(self):
 		""" returns user's home directory path """
@@ -51,8 +47,9 @@ class Remembrall():
 			return home_dir
 
 	def get_tty(self):
-		""" finds terminal to display output to. 
+		""" Finds terminal to direct output to. 
 			Will be used to set crontab """
+
 		try:
 			output = subprocess.check_output(["tty"])
 		except Exception as e:
@@ -60,7 +57,16 @@ class Remembrall():
 			print(e)
 			sys.exit(1)
 		else:
-			return output[:len(output)-2]
+			tty = output[:len(output)-2]
+			#self.tty = tty
+			return tty
+
+	def get_active_ttys(self):
+		pass
+
+	def find_active_ttys(self):
+		""" should fetch all active terminals at the moment """
+		pass
 
 	def get_remembrall_home(self):
 		""" returns path of remembrall home directory"""
@@ -75,20 +81,29 @@ class Remembrall():
 			print("Remembrall already exists!")
 
 	def create_config(self):
-		""" creates config JSON file """		
+		""" creates config JSON files """		
 		home = self.get_remembrall_home()
-		self.user_config = self.get_user_config()
+		self.remembrall_config = self.get_remembrall_config()
 		# create config file
-		with open(home+"/config.json", "w") as config_file:			
-			json.dump(self.user_config, config_file)
+		with open(home + "/" + REMEMBRALL_CONFIG_FILE, "w") as config_file:			
+			json.dump(self.remembrall_config, config_file, indent=4)
 
-	def get_user_config(self):
+		# create to-do list file
+		with open(home + "/" + TODO_LIST_FILE, "w") as todo_file:
+			json.dump({}, todo_file, indent=4)
+
+		config_file.close()
+		todo_file.close()
+
+	def get_remembrall_config(self):
 		name = str(raw_input("Please enter your name: "))
 		reminder_interval = int(raw_input(\
 			"Please enter reminder interval (in minutes): "))
+		active_ttys = [self.tty]  # replace with get active ttys function
 		data = {
 			"name": name,
 			"reminder_interval": reminder_interval,
+			"active_tty": active_ttys,
 		}		
 		return data
 
@@ -104,6 +119,21 @@ class CronJob():
 		else:
 			print("Error in initializing cron-job, no remembrall object found!")
 			sys.exit(1)
+
+
+	def set_cron(self):
+		remembrall_config = self.remembrall.remembrall_config
+		if not remembrall_config:
+			print("User config not available! Please re-initialize Remembrall!")
+			sys.exit(1)
+		else:
+			interval = remembrall_config.get("reminder_interval", None)
+			if interval is None:
+				print("Reminder interval not available!")
+				sys.exit(1)
+			else:
+				print(interval)
+				
 
 
 # test function

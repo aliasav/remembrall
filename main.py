@@ -42,6 +42,7 @@ def args_remembrall_mapper(args):
             remembrall = Remembrall()
             remembrall.init_remembrall()
             cron = CronJob(remembrall)
+            cron.set_cron()
 
 def console_entry():
     """ Entry point for console scripts """
