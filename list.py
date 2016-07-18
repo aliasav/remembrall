@@ -3,6 +3,7 @@
 """
 import sys
 import datetime
+import json
 from initializer import Remembrall
 from constants import *
 
@@ -55,9 +56,10 @@ class ToDoList():
 	def fetch_list_data(self):
 		""" fetches list json data """
 		try:
-			with open(self.remembrall.home_dir + "/" + TODO_LIST_FILE, "r") as todo_file:
+			with open(self.remembrall.remembrall_home + "/" + TODO_LIST_FILE, "r") as todo_file:
 				data = json.load(todo_file)
 				self.list_data = data
+				print(self.list_data)
 			todo_file.close()
 		except Exception as e:
 			print(e)
@@ -65,6 +67,15 @@ class ToDoList():
 
 	def check_json_keys(self, data):
 		pass
+
+if __name__ == "__main__":
+	remembrall = Remembrall()
+	remembrall.init_vars()
+	if not remembrall.check_init():
+		remembrall.init_remembrall()
+	else:
+		todo = ToDoList(remembrall)
+		todo.fetch_list_data()
 
 
 

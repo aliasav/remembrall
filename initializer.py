@@ -78,7 +78,7 @@ class Remembrall():
 			print("Creating remembrall home directory!")
 			os.makedirs(self.get_remembrall_home())
 		else:
-			print("Remembrall already exists!")
+			print("Seems like Remembrall already exists!")
 
 	def create_config(self):
 		""" creates config JSON files """		
@@ -90,16 +90,27 @@ class Remembrall():
 
 		# create to-do list file
 		with open(home + "/" + TODO_LIST_FILE, "w") as todo_file:
-			json.dump({}, todo_file, indent=4)
+			json.dump({"items": [], "count": 0}, todo_file, indent=4)
 
 		config_file.close()
 		todo_file.close()
+
+	def check_init(self):
+		""" returns True if remembrall has been initialized """
+		home = self.get_remembrall_home()
+		if not os.path.exists(home):
+			return False
+		if not os.path.exists(home + "/" + REMEMBRALL_CONFIG_FILE):
+			return False
+		if not os.path.exists(home + "/" + TODO_LIST_FILE):
+			return False
+		return True
 
 	def get_remembrall_config(self):
 		name = str(raw_input("Please enter your name: "))
 		reminder_interval = int(raw_input(\
 			"Please enter reminder interval (in minutes): "))
-		active_ttys = [self.tty]  # replace with get active ttys function
+		active_ttys = [self.tty]  # need to replace with get active ttys function
 		data = {
 			"name": name,
 			"reminder_interval": reminder_interval,
