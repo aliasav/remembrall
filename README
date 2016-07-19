@@ -1,12 +1,20 @@
-Remembrall is an application that allows users to:
-1. Maintain day-to-day TO-DO-LIST
-2. Sends notifications about the items in the TO-DO list
+# Remembrall
 
-Notifications will be terminal notifications (desktop notifications to also be added).
+## Introduction
 
-A daemon process, that checks for items available in the TO-DO list,
-shall run every n hours to display them.
+A terminal to-do list and reminder.
 
-Prototype architecture:
-- Python script that allows CRUD of items of TO-DO list
-- Daemon process that shall run ever n hours to display items
+* Maintain a simple to-list via terminal
+* Get timely terminal notifications
+* Desktop notifications to also be integrated.
+
+## Installation
+
+Clone the project, do a:
+> python setup.py install
+
+### Modules:
+
+* Initializer: Contains Remembrall and CronJob classes. Initializing the remembrall system on device done through here.
+* List: Contains the todo List class, all CRUD functions of the list go here.
+* Constants: Includes all constants used in project.
