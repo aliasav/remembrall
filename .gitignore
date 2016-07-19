@@ -4,3 +4,5 @@ Remembrall.egg-info/*
 *.pyc
 virtualenv
 virtualenv/*
+dist/
+dist/*

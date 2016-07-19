@@ -17,7 +17,7 @@ setup(
         "docopt",
 	"python-crontab",
     ],
-    long_description=read('README'),    
+    long_description=read('README.md'),    
     entry_points={
         'console_scripts': ['remembrall=main:console_entry'],
     },
