@@ -9,16 +9,23 @@ setup(
     version = "0.0.1",
     author = "Saurabh AV",
     author_email = "saurabhav.torres@gmail.com",
-    description = ("A to-do list that reminds!"),
+    description = ("A terminal to-do list that reminds!"),
     license = "BSD",
     keywords = "remembrall to-do list",    
     packages=find_packages(),
     install_requires= [
         "docopt",
-	"python-crontab",
+	   "python-crontab",
+    ],
+    py_modules=[
+        'main', 
+        'initializer', 
+        'constants', 
+        'list'
     ],
     long_description=read('README.md'),    
     entry_points={
         'console_scripts': ['remembrall=main:console_entry'],
     },
+    zip_safe=True,
 )

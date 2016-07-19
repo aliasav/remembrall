@@ -6,3 +6,5 @@ virtualenv
 virtualenv/*
 dist/
 dist/*
+build/
+build/*
