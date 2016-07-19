@@ -1,5 +1,5 @@
 """
-Remembrall: A To-Do list that sned terminal reminders
+Remembrall: A terminal to-do list and reminder.
 
 Usage:  
     main.py init
