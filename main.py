@@ -4,7 +4,10 @@ Remembrall: A To-Do list that sned terminal reminders
 Usage:  
     main.py init
     main.py show [<function1>]
-    main.py add [id]
+    main.py add
+    main.py edit [<id>]
+    main.py delete [<id>]
+    main.py clear
     main.py (-h | --help)
 
 Examples:
@@ -39,23 +42,37 @@ def get_args():
 def args_remembrall_mapper(args):
     """ maps arguments to Remembrall's functions """    
     if args and (type(args) == Dict):
+
+        # initialize remembrall and list
         remembrall = Remembrall()
         remembrall.init_remembrall()
+        todo = ToDoList(remembrall)
+        todo.fetch_list_data()
+        
+        # map args to functions
         if args.get("init", False) == True:
             print("Initializing sequence completed!")
-        elif args.get("show", False) == True:
-            todo = ToDoList(remembrall)
-            todo.fetch_list_data()
+        # show: display items
+        elif args.get("show", False) == True:            
             func1 = args.get("<function1>", None)
             if func1 == "ids":
                 todo.list_items(True)
             else:
                 todo.list_items(False)
+        # add: add to list
         elif args.get("add", False) == True:
-            id = args.get("id", None)            
-            todo = ToDoList(remembrall)
-            todo.fetch_list_data()            
-            todo.add_item()            
+            todo.add_item()
+        # edit: edit item in list
+        elif args.get("edit", False) == True:
+            id = args.get("<id>", None)
+            todo.edit_item(id) 
+        # delete: deletes item in list
+        elif args.get("delete", False) == True: 
+            id = args.get("<id>", None)
+            todo.delete_item(id)
+        # clear: clear list
+        elif args.get("clear", False) == True:
+            todo.clear_list() 
 
 def console_entry():
     """ Entry point for console scripts """
