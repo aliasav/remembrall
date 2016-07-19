@@ -18,6 +18,7 @@ class Remembrall():
 		self.tty = None
 		self.remembrall_config = None
 		self.todo_file = None
+		self.remembrall_home = None
 
 	def init_remembrall(self):
 		""" 
@@ -26,14 +27,17 @@ class Remembrall():
 			sets-up crontab
 		"""
 		self.init_vars()
-		self.create_remembrall_folder()
-		self.create_config()
+		if not self.check_init():			
+			self.create_remembrall_folder()
+			self.create_config()
+		else:			
+			#print("Remembrall already initialized, you're good to go!")
+			pass
 
 	def init_vars(self):
 		self.home_dir = self.get_home_dir()
 		self.tty = self.get_tty()
 		self.remembrall_home = self.get_remembrall_home()
-
 
 	def get_home_dir(self):
 		""" returns user's home directory path """
@@ -83,7 +87,7 @@ class Remembrall():
 	def create_config(self):
 		""" creates config JSON files """		
 		home = self.get_remembrall_home()
-		self.remembrall_config = self.get_remembrall_config()
+		self.remembrall_config = self.get_remembrall_config_input()
 		# create config file
 		with open(home + "/" + REMEMBRALL_CONFIG_FILE, "w") as config_file:			
 			json.dump(self.remembrall_config, config_file, indent=4)
@@ -97,16 +101,21 @@ class Remembrall():
 
 	def check_init(self):
 		""" returns True if remembrall has been initialized """
-		home = self.get_remembrall_home()
+		home = self.remembrall_home
 		if not os.path.exists(home):
 			return False
 		if not os.path.exists(home + "/" + REMEMBRALL_CONFIG_FILE):
 			return False
 		if not os.path.exists(home + "/" + TODO_LIST_FILE):
 			return False
-		return True
 
-	def get_remembrall_config(self):
+		config = self.get_remembrall_config_file_data()
+		if config["init"] == True:
+			return True
+		else:
+			return False
+
+	def get_remembrall_config_input(self):
 		name = str(raw_input("Please enter your name: "))
 		reminder_interval = int(raw_input(\
 			"Please enter reminder interval (in minutes): "))
@@ -115,9 +124,20 @@ class Remembrall():
 			"name": name,
 			"reminder_interval": reminder_interval,
 			"active_tty": active_ttys,
+			"init": True,
 		}		
 		return data
 
+	def get_remembrall_config_file_data(self):
+		try:
+			with open(self.remembrall_home+"/"+REMEMBRALL_CONFIG_FILE, "r") as config_file:
+				config_data = json.load(config_file)
+		except Exception as e:
+			print(e)
+			sys.exit(1)
+		else:
+			config_file.close()
+			return config_data
 
 class CronJob():
 	""" 
@@ -126,7 +146,7 @@ class CronJob():
 	def __init__(self, remembrall):
 		if remembrall and isinstance(remembrall, Remembrall):
 			self.remembrall = remembrall
-			print("Initialized cron-job object")
+			#print("Initialized cron-job object")
 		else:
 			print("Error in initializing cron-job, no remembrall object found!")
 			sys.exit(1)
@@ -143,10 +163,10 @@ class CronJob():
 				print("Reminder interval not available!")
 				sys.exit(1)
 			else:
-				print(interval)
+				#print(interval)
+				pass
 				
-
-
+				
 # test function
 def test_main():	
 	remembrall = Remembrall()
