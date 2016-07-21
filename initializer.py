@@ -8,6 +8,7 @@ import subprocess
 import traceback
 from constants import *
 from future.utils import lmap
+from builtins import input
 
 class Remembrall():
 	"""
@@ -21,6 +22,7 @@ class Remembrall():
 		self.remembrall_config = None
 		self.todo_file = None
 		self.remembrall_home = None
+		self.which_remembrall = None
 
 	def init_remembrall(self):
 		""" 
@@ -41,6 +43,7 @@ class Remembrall():
 		self.tty = self.get_tty()
 		self.remembrall_home = self.get_remembrall_home()	
 		self.remembrall_config = self.get_remembrall_config_file_data()	
+		self.which_remembrall = self.get_which_remembrall()
 
 	def get_home_dir(self):
 		""" returns user's home directory path """
@@ -85,6 +88,13 @@ class Remembrall():
 		""" returns path of remembrall home directory"""
 		return self.home_dir + "/.remembrall"
 
+	def get_which_remembrall(self):
+		output = subprocess.check_output(["which", "remembrall"])
+		if type(output)==type(b""):
+			output = output.decode("utf-8")
+		output = output.lstrip().rstrip().replace("\n", "")
+		return output
+
 	def create_remembrall_folder(self):		
 		""" creates remembrall home dir """
 		if not os.path.exists(self.remembrall_home):
@@ -125,8 +135,8 @@ class Remembrall():
 			return False
 
 	def get_remembrall_config_input(self):
-		name = str(raw_input("Please enter your name: "))
-		reminder_interval = int(raw_input(\
+		name = str(input("Please enter your name: "))
+		reminder_interval = int(input(\
 			"Please enter reminder interval (in minutes): "))
 		active_ttys = self.get_tty()
 		data = {
@@ -134,6 +144,7 @@ class Remembrall():
 			"reminder_interval": reminder_interval,
 			"active_tty": active_ttys,
 			"init": True,
+			"which_remembrall": self.get_which_remembrall(),
 		}		
 		return data
 
@@ -163,10 +174,11 @@ class CronJob():
 			print("Error in initializing cron-job, no remembrall object found!")
 			sys.exit(1)
 
-
 	def set_cron(self):
 		#print(self.remembrall.home_dir, self.remembrall.active_ttys, self.remembrall.remembrall_config)
 		remembrall_config = self.remembrall.remembrall_config
+		which_remembrall = self.remembrall.which_remembrall
+		print(which_remembrall)
 		if not remembrall_config:
 			print("User config not available! Please re-initialize Remembrall!")
 			sys.exit(1)
@@ -184,7 +196,7 @@ class CronJob():
 def test_main():	
 	remembrall = Remembrall()
 	remembrall.init_remembrall()
-	#remembrall.create_config()		
+	remembrall.create_config()		
 	cron = CronJob(remembrall)
 	cron.set_cron()
 
