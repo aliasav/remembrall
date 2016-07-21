@@ -16,6 +16,7 @@ setup(
     install_requires= [
         "docopt",
 	   "python-crontab",
+       "future"
     ],
     py_modules=[
         'main', 

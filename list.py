@@ -158,6 +158,14 @@ class ToDoList():
 	def check_json_keys(self, data):
 		pass
 
+class ListItem(object):
+	""" class for  a item in a list"""
+	def __init__(self, List):
+		super(ListItem, self).__init__()
+		self.todo_list = List
+		
+
+
 if __name__ == "__main__":
 	remembrall = Remembrall()
 	remembrall.init_vars()

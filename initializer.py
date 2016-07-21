@@ -5,7 +5,9 @@ import sys
 import os
 import json
 import subprocess
+import traceback
 from constants import *
+from future.utils import lmap
 
 class Remembrall():
 	"""
@@ -55,22 +57,28 @@ class Remembrall():
 			Will be used to set crontab """
 
 		try:
-			output = subprocess.check_output(["tty"])
+			output = subprocess.check_output("who")
+			#print(output)
 		except Exception as e:
 			print("Couldn't get tty output! :(")
 			print(e)
+			traceback.print_exc()
 			sys.exit(1)
 		else:
-			tty = output[:len(output)-2]
-			#self.tty = tty
-			return tty
+			active_ttys = self.process_tty_output(output)
+			#print("active_ttys: %s" %active_ttys)
+			self.active_ttys = active_ttys
+			return active_ttys[1]
 
-	def get_active_ttys(self):
-		pass
-
-	def find_active_ttys(self):
-		""" should fetch all active terminals at the moment """
-		pass
+	def process_tty_output(self, o):
+		""" process 'who' cmd output and return 
+		list of active ttys """
+		clean = o.lstrip().rstrip()
+		if (type(clean)==type(b'')):
+			clean = clean.decode("utf-8")
+		clean_list = clean.split("\n")[1:]
+		active_ttys = lmap(lambda x: x.split("  ")[1], clean_list)		
+		return active_ttys
 
 	def get_remembrall_home(self):
 		""" returns path of remembrall home directory"""
@@ -166,11 +174,11 @@ class CronJob():
 				#print(interval)
 				pass
 				
-				
+
 # test function
 def test_main():	
 	remembrall = Remembrall()
-	remembrall.init_remembrall()	
+	remembrall.get_tty()
 
 # entry point for console scripts
 def entry():
