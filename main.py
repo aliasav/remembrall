@@ -2,18 +2,19 @@
 Remembrall: A terminal to-do list and reminder.
 
 Usage:  
-    main.py init
-    main.py show [<function1>]
-    main.py add
-    main.py edit [<id>]
-    main.py delete [<id>]
-    main.py clear
-    main.py (-h | --help)
+    remembrall init
+    remembrall show [<function1>]
+    remembrall add
+    remembrall edit [<id>]
+    remembrall delete [<id>]
+    remembrall clear
+    remembrall remind [<action>]
+    remembrall (-h | --help)
 
 Examples:
-    main.py list add "Gotta catch a Pikachu!"
-    main.py list remove <id>
-    main.py init
+    remembrall list add "Gotta catch a Pikachu!"
+    remembrall list remove <id>
+    remembrall init
   
 
 Options:
@@ -46,12 +47,14 @@ def args_remembrall_mapper(args):
         # initialize remembrall and list
         remembrall = Remembrall()
         remembrall.init_remembrall()
+        cron = CronJob(remembrall)
         todo = ToDoList(remembrall)
         todo.fetch_list_data()
         
         # map args to functions
         if args.get("init", False) == True:
-            print("Initializing sequence completed!")
+            cron.set_cron(True)
+            print("Initializing sequence completed!\n")
         # show: display items
         elif args.get("show", False) == True:            
             func1 = args.get("<function1>", None)
@@ -73,6 +76,14 @@ def args_remembrall_mapper(args):
         # clear: clear list
         elif args.get("clear", False) == True:
             todo.clear_list() 
+        # remind functions
+        elif args.get("remind", False) == True:
+            action = args.get("<action>", None)
+            if action:
+                if action == "clear":
+                    cron.remove_cron()
+                elif action == "reset":
+                    cron.set_cron(True)
 
 def console_entry():
     """ Entry point for console scripts """

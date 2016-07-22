@@ -9,6 +9,7 @@ import traceback
 from constants import *
 from future.utils import lmap
 from builtins import input
+from crontab import CronTab
 
 class Remembrall():
 	"""
@@ -43,7 +44,7 @@ class Remembrall():
 		self.tty = self.get_tty()
 		self.remembrall_home = self.get_remembrall_home()	
 		self.remembrall_config = self.get_remembrall_config_file_data()	
-		self.which_remembrall = self.get_which_remembrall()
+		#self.which_remembrall = self.get_which_remembrall()
 
 	def get_home_dir(self):
 		""" returns user's home directory path """
@@ -169,36 +170,70 @@ class CronJob():
 	def __init__(self, remembrall):
 		if remembrall and isinstance(remembrall, Remembrall):
 			self.remembrall = remembrall
-			print("Initialized cron-job object")
+			self.cron = CronTab(user=True)
+			#print("Initialized cron-job object")
 		else:
-			print("Error in initializing cron-job, no remembrall object found!")
+			print("\nError in initializing cron-job, no remembrall object found!\n")
 			sys.exit(1)
 
-	def set_cron(self):
-		#print(self.remembrall.home_dir, self.remembrall.active_ttys, self.remembrall.remembrall_config)
-		remembrall_config = self.remembrall.remembrall_config
-		which_remembrall = self.remembrall.which_remembrall
-		print(which_remembrall)
-		if not remembrall_config:
-			print("User config not available! Please re-initialize Remembrall!")
-			sys.exit(1)
-		else:
-			interval = remembrall_config.get("reminder_interval", None)
-			if interval is None:
-				print("Reminder interval not available!")
-				sys.exit(1)
+	def set_cron(self, input_flag=False):
+		""" sets reminder cron
+			will clear existing crons first
+		 """
+		self.remove_all_crons()	
+		
+		if self.remembrall.check_init():
+			remembrall_config = self.remembrall.remembrall_config
+			which_remembrall = self.remembrall.get_which_remembrall()
+			if input_flag:
+				cron_settings = self.get_cron_settings_input()
+				interval = cron_settings.get("reminder_interval", None)
 			else:
-				#print(interval)
-				pass
+				interval = remembrall_config.get("reminder_interval", None)
+
+			cron_cmd = which_remembrall + " show " + "> /dev/" + \
+						self.remembrall.tty[0]								
+			job = self.cron.new(cron_cmd, comment="remembrall")
+
+			if interval:
+				interval = int(interval)
+				job.minute.every(interval)
 				
+			self.cron.write()		
+			print("\nReminder set sucessfully!\nYou'll get a terminal notification every %s minutes!\n" \
+				%interval)
+
+	def remove_cron(self):
+		""" removes all crons """
+		self.cron.remove_all(comment="remembrall")
+		self.cron.write()
+		print("\nCleared reminders!\n")
+
+	def remove_all_crons(self):
+		try:
+			self.cron.remove_all(comment="remembrall")
+			self.cron.write()
+		except Exception as e:
+			pass
+		else:
+			pass
+
+	def get_cron_settings_input(self):
+		""" get user input for cron settings """
+		reminder_interval = int(input(\
+			"\nPlease enter reminder interval (in minutes): "))
+		return {
+			"reminder_interval": reminder_interval,
+		}
 
 # test function
 def test_main():	
 	remembrall = Remembrall()
 	remembrall.init_remembrall()
-	remembrall.create_config()		
+	#remembrall.create_config()		
 	cron = CronJob(remembrall)
-	cron.set_cron()
+	#cron.set_cron()
+	cron.remove_cron()
 
 # entry point for console scripts
 def entry():
