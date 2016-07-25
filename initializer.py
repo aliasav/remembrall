@@ -77,7 +77,10 @@ class Remembrall():
 
 	def process_tty_output(self, o):
 		""" process 'who' cmd output and return 
-		list of active ttys """
+		list of active ttys 
+		 who cmd output: 'user  console  Jul 13 23:42'
+		"""
+
 		clean = o.lstrip().rstrip()
 		if (type(clean)==type(b'')):
 			clean = clean.decode("utf-8")
