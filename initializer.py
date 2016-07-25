@@ -155,12 +155,12 @@ class Remembrall():
 			if os.path.exists(self.remembrall_home+"/"+REMEMBRALL_CONFIG_FILE):
 				with open(self.remembrall_home+"/"+REMEMBRALL_CONFIG_FILE, "r") as config_file:
 					config_data = json.load(config_file)
+				config_file.close()
 			else: pass
 		except Exception as e:
 			print(e)
 			sys.exit(1)
-		else:
-			config_file.close()
+		else:			
 			return config_data
 
 class CronJob():
