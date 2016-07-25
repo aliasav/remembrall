@@ -82,7 +82,7 @@ class Remembrall():
 		if (type(clean)==type(b'')):
 			clean = clean.decode("utf-8")
 		clean_list = clean.split("\n")[1:]
-		active_ttys = lmap(lambda x: x.split("  ")[1], clean_list)		
+		active_ttys = lmap(lambda x: x.split()[1], clean_list)		
 		return active_ttys
 
 	def get_remembrall_home(self):
