@@ -1,12 +1,9 @@
 import os
 from setuptools import setup, find_packages
 
-def read(fname):
-    return open(os.path.join(os.path.dirname(__file__), fname)).read()
-
 setup(
     name = "Remembrall",
-    version = "0.0.2",
+    version = "0.0.3",
     author = "Saurabh AV",
     author_email = "saurabhav.torres@gmail.com",
     description = ("A terminal to-do list that reminds!"),
@@ -23,8 +20,7 @@ setup(
         'initializer', 
         'constants', 
         'list'
-    ],
-    long_description=read('README.md'),    
+    ],   
     entry_points={
         'console_scripts': ['remembrall=main:console_entry'],
     },
