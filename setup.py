@@ -6,7 +6,7 @@ def read(fname):
 
 setup(
     name = "Remembrall",
-    version = "0.0.1",
+    version = "0.0.2",
     author = "Saurabh AV",
     author_email = "saurabhav.torres@gmail.com",
     description = ("A terminal to-do list that reminds!"),
